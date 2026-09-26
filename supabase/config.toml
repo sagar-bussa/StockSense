@@ -1,0 +1,47 @@
+# Supabase local development configuration.
+# Only used by `supabase start` (the local Docker stack). It is not required to
+# run against a hosted project - for that, use the SQL editor or `supabase db push`.
+
+project_id = "stocksense"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/**", "http://localhost:3000/**"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+
+[auth.email]
+# Off for the demo so seeded accounts sign in without an inbox round-trip.
+# Turn this on for anything resembling production.
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+secure_password_change = false
+max_frequency = "1s"
+otp_length = 6
+otp_expiry = 3600
+
+[realtime]
+enabled = true

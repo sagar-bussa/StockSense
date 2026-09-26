@@ -1,0 +1,253 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ *
+ * StockSense design system
+ *
+ * Rules the whole app follows:
+ *  - 8px spacing rhythm. Every padding/gap is a multiple of 0.5rem.
+ *  - Neutral slate base + ONE brand accent. Status hues are reserved
+ *    exclusively for document/stock status and never used decoratively.
+ *  - Borders over shadows. Soft elevation only, never heavy drop shadows.
+ *  - Quantities always render in tabular figures so columns align.
+ * ------------------------------------------------------------------ */
+@theme {
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, monospace;
+
+  /* Restrained: 8px base, slightly softened corners. */
+  --radius: 0.625rem;
+
+  /* Radius scale. Declared here rather than in :root so Tailwind owns them and
+     `rounded-*` utilities resolve to these values instead of competing with a
+     second definition of the same custom property. */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-brand-50: oklch(0.97 0.014 254.604);
+  --color-brand-100: oklch(0.932 0.032 255.585);
+  --color-brand-200: oklch(0.882 0.059 254.128);
+  --color-brand-300: oklch(0.809 0.105 251.813);
+  --color-brand-400: oklch(0.707 0.165 254.624);
+  --color-brand-500: oklch(0.623 0.214 259.815);
+  --color-brand-600: oklch(0.546 0.245 262.881);
+  --color-brand-700: oklch(0.488 0.243 264.376);
+  --color-brand-800: oklch(0.424 0.199 265.638);
+  --color-brand-900: oklch(0.379 0.146 265.522);
+  --color-brand-950: oklch(0.282 0.091 267.935);
+
+  /* Compact table rhythm used across every data view. */
+  --spacing-row: 2.75rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Semantic tokens -> Tailwind utilities
+ *
+ * Tailwind v4 only generates a utility (bg-background, border-border,
+ * text-foreground) if a matching `--color-*` entry exists. The actual
+ * values live in `:root`/`.dark` below so they can be swapped by theme;
+ * `@theme inline` publishes them under the names Tailwind looks for,
+ * while `inline` keeps the reference to the var rather than copying
+ * the resolved value at build time - which is what makes dark mode work.
+ * ------------------------------------------------------------------ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Status hues are reserved for document and stock status only. */
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+}
+
+/* ------------------------------------------------------------------ *
+ * Base layer
+ * ------------------------------------------------------------------ */
+@layer base {
+  :root {
+    --background: oklch(0.985 0.002 247.839);
+    --foreground: oklch(0.208 0.042 265.755);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.208 0.042 265.755);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.208 0.042 265.755);
+    --primary: oklch(0.546 0.245 262.881);
+    --primary-foreground: oklch(0.985 0.002 247.839);
+    --secondary: oklch(0.968 0.007 247.896);
+    --secondary-foreground: oklch(0.279 0.041 260.031);
+    --muted: oklch(0.968 0.007 247.896);
+    --muted-foreground: oklch(0.554 0.041 257.417);
+    --accent: oklch(0.968 0.007 247.896);
+    --accent-foreground: oklch(0.279 0.041 260.031);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.985 0.002 247.839);
+    --border: oklch(0.925 0.008 252.529);
+    --input: oklch(0.925 0.008 252.529);
+    --ring: oklch(0.546 0.245 262.881);
+
+    /* Status hues - document and stock status only, never decoration. */
+    --success: oklch(0.596 0.145 163.225);
+    --success-soft: oklch(0.962 0.044 156.745);
+    --warning: oklch(0.666 0.179 58.318);
+    --warning-soft: oklch(0.973 0.071 103.128);
+    --danger: oklch(0.577 0.245 27.325);
+    --danger-soft: oklch(0.971 0.013 17.38);
+    --info: oklch(0.588 0.158 241.966);
+    --info-soft: oklch(0.951 0.026 236.824);
+
+    --chart-1: oklch(0.623 0.214 259.815);
+    --chart-2: oklch(0.596 0.145 163.225);
+    --chart-3: oklch(0.666 0.179 58.318);
+    --chart-4: oklch(0.577 0.245 27.325);
+    --chart-5: oklch(0.488 0.243 264.376);
+
+    --sidebar: oklch(1 0 0);
+    --sidebar-foreground: oklch(0.208 0.042 265.755);
+    --sidebar-border: oklch(0.925 0.008 252.529);
+    --sidebar-accent: oklch(0.968 0.007 247.896);
+    --sidebar-accent-foreground: oklch(0.279 0.041 260.031);
+  }
+
+  .dark {
+    --background: oklch(0.164 0.024 257.635);
+    --foreground: oklch(0.968 0.007 247.896);
+    --card: oklch(0.208 0.034 257.417);
+    --card-foreground: oklch(0.968 0.007 247.896);
+    --popover: oklch(0.208 0.034 257.417);
+    --popover-foreground: oklch(0.968 0.007 247.896);
+    --primary: oklch(0.707 0.165 254.624);
+    --primary-foreground: oklch(0.164 0.024 257.635);
+    --secondary: oklch(0.279 0.041 260.031);
+    --secondary-foreground: oklch(0.968 0.007 247.896);
+    --muted: oklch(0.279 0.041 260.031);
+    --muted-foreground: oklch(0.708 0.04 256.788);
+    --accent: oklch(0.279 0.041 260.031);
+    --accent-foreground: oklch(0.968 0.007 247.896);
+    --destructive: oklch(0.704 0.191 22.216);
+    --destructive-foreground: oklch(0.164 0.024 257.635);
+    --border: oklch(0.306 0.034 256.788);
+    --input: oklch(0.306 0.034 256.788);
+    --ring: oklch(0.707 0.165 254.624);
+
+    /* Status hues lighten for dark surfaces; the -soft tints become the
+       muted backgrounds rather than the light-mode near-white washes. */
+    --success: oklch(0.696 0.17 162.48);
+    --success-soft: oklch(0.279 0.041 162.4);
+    --warning: oklch(0.769 0.188 70.08);
+    --warning-soft: oklch(0.288 0.045 70.5);
+    --danger: oklch(0.704 0.191 22.216);
+    --danger-soft: oklch(0.271 0.043 22.9);
+    --info: oklch(0.707 0.165 254.624);
+    --info-soft: oklch(0.273 0.043 258.4);
+
+    --chart-1: oklch(0.707 0.165 254.624);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.704 0.191 22.216);
+    --chart-5: oklch(0.627 0.265 303.9);
+
+    --sidebar: oklch(0.185 0.031 257.423);
+    --sidebar-foreground: oklch(0.968 0.007 247.896);
+    --sidebar-border: oklch(0.306 0.034 256.788);
+    --sidebar-accent: oklch(0.279 0.041 260.031);
+    --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Focus is always visible and always the same. Accessibility is not
+     something we degrade when a component looks busier. */
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+
+  /* Numbers line up in columns. Every quantity in this app depends on it. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    @apply tabular-nums;
+  }
+
+  /* Sticky table headers need a solid backdrop or rows ghost through. */
+  .sticky-header th {
+    @apply bg-muted/95 backdrop-blur-sm;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /* Mobile: nudge horizontally scrollable tables that have no visible affordance. */
+  .scroll-hint {
+    background:
+      linear-gradient(to right, var(--color-background) 30%, transparent),
+      linear-gradient(to left, var(--color-background) 30%, transparent),
+      radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.12), transparent),
+      radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.12), transparent);
+    background-position:
+      left center,
+      right center,
+      left center,
+      right center;
+    background-repeat: no-repeat;
+    background-size:
+      2rem 100%,
+      2rem 100%,
+      0.75rem 100%,
+      0.75rem 100%;
+    background-attachment: local, local, scroll, scroll;
+  }
+}

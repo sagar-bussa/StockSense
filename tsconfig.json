@@ -1,0 +1,12 @@
+{
+  /* Some tooling (the shadcn CLI, editor path helpers) only reads the root
+     tsconfig, not the project references below. Keeping the alias in both
+     places means every tool agrees on where `@` points. */
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+}
